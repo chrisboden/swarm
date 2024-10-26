@@ -1,4 +1,5 @@
 # Standard library imports
+import os
 import copy
 import json
 from collections import defaultdict
@@ -26,7 +27,14 @@ __CTX_VARS_NAME__ = "context_variables"
 class Swarm:
     def __init__(self, client=None):
         if not client:
-            client = OpenAI()
+            client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=os.getenv("OPENROUTER_API_KEY"),
+                default_headers={
+                    "HTTP-Referer": os.getenv("APP_URL", "http://localhost:8501"),  # Required for OpenRouter
+                    "X-Title": os.getenv("APP_TITLE", "Swarm Agent Framework")  # Optional, but good practice
+                }
+            )
         self.client = client
 
     def get_chat_completion(
