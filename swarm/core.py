@@ -3,6 +3,9 @@ import copy
 import json
 from collections import defaultdict
 from typing import List, Callable, Union
+import os
+from dotenv import load_dotenv
+
 
 # Package/library imports
 from openai import OpenAI
@@ -20,13 +23,18 @@ from .types import (
     Result,
 )
 
+load_dotenv()
+
 __CTX_VARS_NAME__ = "context_variables"
 
 
 class Swarm:
     def __init__(self, client=None):
         if not client:
-            client = OpenAI()
+            client = OpenAI(
+                base_url=os.getenv('API_BASE_URL'),
+                api_key=os.getenv("OPENROUTER_API_KEY")
+            )
         self.client = client
 
     def get_chat_completion(
